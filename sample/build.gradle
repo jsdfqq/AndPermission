@@ -14,7 +14,7 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.dependencies.permission
+    implementation project(":permission")
 
     implementation rootProject.ext.dependencies.appCompat
     implementation rootProject.ext.dependencies.design

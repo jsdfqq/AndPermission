@@ -16,4 +16,30 @@ dependencies {
     implementation rootProject.ext.dependencies.fragment
 }
 
-apply from: "https://raw.githubusercontent.com/yanzhenjie/bintray/master/maven.gradle"
+//apply from: "https://raw.githubusercontent.com/yanzhenjie/bintray/master/maven.gradle"
+
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            snapshotRepository(url: "${artifactory_contextUrl}/libs-snapshot-local") {
+                authentication(userName: 'changkang.cai', password: '{DESede}ZS1q+NSVLgOp3kv9fRQrWA2YfmIz7L3P')
+            }
+            repository(url: "${artifactory_contextUrl}/libs-release-local") {
+                authentication(userName: 'changkang.cai', password: '{DESede}ZS1q+NSVLgOp3kv9fRQrWA2YfmIz7L3P')
+            }
+            pom.groupId = 'com.ymm.lib'
+            pom.artifactId = 'permission-impl'
+            pom.version = '1.0.0'
+        }
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.sourceFiles
+    }
+    artifacts {
+        archives androidSourcesJar
+    }
+}
