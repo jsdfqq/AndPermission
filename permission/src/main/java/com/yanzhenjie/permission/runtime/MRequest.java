@@ -16,6 +16,7 @@
 package com.yanzhenjie.permission.runtime;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import com.yanzhenjie.permission.Action;
@@ -96,7 +97,13 @@ class MRequest implements PermissionRequest, RequestExecutor, PermissionActivity
                 execute();
             }
         } else {
-            dispatchCallback();
+            //targetSdk 23以下的话做双重校验
+            if (mSource.getContext().getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.M) {
+                dispatchCallback();
+            } else {
+                //targetSdk 23及以上无需做严格模式的权限校验，会增加额外耗时
+                callbackSucceed();
+            }
         }
     }
 
