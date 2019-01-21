@@ -97,13 +97,7 @@ class MRequest implements PermissionRequest, RequestExecutor, PermissionActivity
                 execute();
             }
         } else {
-            //targetSdk 23以下的话做双重校验
-            if (mSource.getContext().getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.M) {
-                dispatchCallback();
-            } else {
-                //targetSdk 23及以上无需做严格模式的权限校验，会增加额外耗时
-                callbackSucceed();
-            }
+            dispatchCallback();
         }
     }
 
@@ -128,7 +122,14 @@ class MRequest implements PermissionRequest, RequestExecutor, PermissionActivity
     }
 
     private void dispatchCallback() {
-        List<String> deniedList = getDeniedPermissions(DOUBLE_CHECKER, mSource, mPermissions);
+        List<String> deniedList;
+        //targetSdk 23以下的话做双重校验
+        if (mSource.getContext().getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.M) {
+            deniedList = getDeniedPermissions(DOUBLE_CHECKER, mSource, mPermissions);
+        } else {
+            //targetSdk 23及以上无需做严格模式的权限校验，会增加额外耗时
+            deniedList = getDeniedPermissions(STANDARD_CHECKER, mSource, mPermissions);
+        }
         if (deniedList.isEmpty()) {
             callbackSucceed();
         } else {
