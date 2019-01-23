@@ -56,7 +56,11 @@ public final class PermissionActivity extends Activity {
         Intent intent = new Intent(context, PermissionActivity.class);
         intent.putExtra(KEY_INPUT_OPERATION, VALUE_INPUT_PERMISSION);
         intent.putExtra(KEY_INPUT_PERMISSIONS, permissions);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (!(context instanceof Activity)) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
         context.startActivity(intent);
     }
 
